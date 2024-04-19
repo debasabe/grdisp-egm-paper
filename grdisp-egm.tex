@@ -1,0 +1,303 @@
+\documentclass[review,hidelinks,onefignum,onetabnum]{siamart220329}
+\input{ex_shared}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\newcommand{\tw}{\textwidth}
+\newcommand{\mitbf}[1]{\boldsymbol{\mathit{#1}}}
+\newcommand{\dgpenalty}{R}
+\newcommand{\dgsform}{S}
+\graphicspath{{./FIG/},{../FIG/},{../Fractures/FIG/}}
+
+\headers{Grid dispersion of EGM}{J.D.~{De Basabe}, J.~Vamaraju and M.K.~Sen}
+
+\title{Grid-Dispersion Analysis of the Enriched-Galerkin Method for Elastic Wave Propagation}
+\author{Jonas D.~De Basabe\thanks{CICESE, Ensenada, Mexico 
+  (\email{jonas@cicese.mx}).}
+\and Mrinal K.~Sen\thanks{The University of Texas at Austin, USA, (\email{mrinal@utexas.edu})}
+\and Raul U.~Silva-Avalos\thanks{Universidad Autonoma de Zacatecas, Zacatecas, Mexico, (\email{rsilva@uaz.edu.mx})}
+}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The enriched Galerkin method (EGM) combines the advantages of spectral element and discontinuous Galerkin methods. 
+We present a grid-dispersion analysis of this method and show that, using enriched basis of low polynomial order, the results are polluted with grid-dispersion error. This error can be minimized using high-order enrichment.
+We also show that the stability conditions of EGM are significantly higher than those of the discontinuous Galerkin method.
+Our analysis gives insight on the accuracy of EGM as a function of the order of the enriched basis functions.
+\end{abstract}
+
+\begin{keywords}
+Enriched Galerkin method, grid dispersion, numerical stability.
+MSC: 65L60, 37N30, 65M12, 35L10, 86A15, 74B05, 74J05, 74E10, 74A45.
+\end{keywords}
+
+
+\section{Introduction}
+
+Originated as eXtended FEM (eXtended FEM (XFEM), was proposed in 1999 by Ted Belytschko, Y. Moës, and S. Usui)
+originalmente planteado por \cite{SuLi09}
+
+\section{The Elastic Wave Equation}
+
+
+\section{The Enriched-Galerkin Method}
+
+The enriched Galerkin method (EGM) is a finite-element method that combines continuous and discontinuous basis functions. Its application to elastic wave propagation and \textit{a priori} error analysis is found in \cite{VaDeSeWh18}. We include here the formulation of the method for completeness.
+
+EGM is based on the following weak formulation of the elastic wave equation:
+Find $\mitbf u\in \mitbf{X}^D$ such that for all $\mitbf v\in \mitbf{X}^D$
+\begin{eqnarray}
+\sum_{E\in \Omega_h} \Big( \left( \rho \partial_{tt} \mitbf u, \mitbf v \right )_E
+	+{\mitbf B_E(\mitbf u, \mitbf v)} \Big)
+	+ \sum_{\gamma\in\Gamma_h}{\mitbf J^c_\gamma(\mitbf u, \mitbf v; \dgsform, \dgpenalty)} =
+	\sum_{E\in \Omega_h} ( \mitbf f, \mitbf v)_E
+	\label{eq:elast_dg_weak}
+\end{eqnarray}
+where
+$X^D = \left\{ \varphi \mid \varphi\in\mitbf H^1(E) \; \forall\; E\in \Omega_h,\;\varphi=0 \textrm{ on }\Gamma_D \right\}$,
+\begin{eqnarray}
+\mitbf B_E(\mitbf u, \mitbf v) &=&
+\int_E C_{ijkl} u_{j,i} v_{l,k} \;d\Omega,
+\\
+{\mitbf J^c_\gamma(\mitbf u, \mitbf v; \dgsform, \dgpenalty)} &=&
+- \int_{\gamma} \{\tau_i(\mitbf u)\}[v_i] \;d\gamma
++ \dgsform \int_{\gamma} \{\tau_i(\mitbf v)\}[u_i] \;d\gamma
+\label{eq:jfunc}
+\\ \nonumber
+&+& \dgpenalty\int_{\gamma}\{C_{1111}\}[u_i][v_i]\;d\gamma,
+\end{eqnarray}
+$\tau_i(\mitbf u)=C_{ijkl} u_{l,k} n_j$ is the traction vector,
+$C_{ijkl} = C_{ijkl}(\mitbf x)$ is the elastic tensor,
+$\rho=\rho(\mitbf{x})$ is the density,
+$\Omega_h$ is the set of elements and
+$\Gamma_h$ is the set of all faces between elements.
+The parameter $\dgpenalty$ is the penalty, and
+$\dgsform$ is a parameter that takes the values
+$\dgsform=0$ for the incomplete formulation,
+$\dgsform=-1$ for the symmetric formulation and
+$\dgsform=1$ for the non-symmetric formulation.
+The penalty is given by 
+$$
+R= \sigma \frac{(\kappa + 1)(\kappa + 2)}{|\gamma|},
+$$
+where $|\gamma|$ is the length of the face, 
+$\kappa$ is the polynomial order of the basis functions and 
+$\sigma$ is an arbitrary constant parameter. 
+In practice, $\sigma$ needs to be large enough to impose continuity across the elements. We will show in the stability analysis that, if $\sigma$ is too large, the stability conditions are more restrictive.
+
+
+
+\section{Grid-Dispersion Analysis}
+
+El problema semidiscreto
+\begin{eqnarray*}
+M_{ij}\partial_{tt} U^x_j &=& K^1_{ij} U^x_j +  K^2_{ij} U^z_j
+\\
+M_{ij}\partial_{tt} U^z_j &=& K^3_{ij} U^x_j +  K^4_{ij} U^z_j
+\end{eqnarray*}
+donde $M_{ij}$ es la matriz de masa y $K^\nu_{ij}$ son las matrices de rigidez.
+
+Sustituyendo la soluci\'on de onda plana y usando los supuestos
+\begin{eqnarray*}
+\omega^2 M_{ij} U^x_j &=& \widetilde K^1_{ij} U^x_j +  \widetilde K^2_{ij} U^z_j
+\\
+\omega^2 M_{ij} U^z_j &=& \widetilde K^3_{ij} U^x_j +  \widetilde K^4_{ij} U^z_j
+\end{eqnarray*}
+donde $\widetilde K^\nu_{ij}$ son las matrices din\'amicas de rigidez, dadas por
+\begin{eqnarray*}
+	\widetilde K^\nu_{ij} = \widehat K^\nu_{ij} 
+  + e^{ -\mathrm i k_z h} L^{\nu,T}_{ij} + e^{ \mathrm i k_z h} L^{\nu,B}_{ij} 
+  + e^{ -\mathrm i k_x h} L^{\nu,L}_{ij} + e^{ \mathrm i k_x h} L^{\nu,R}_{ij},
+\end{eqnarray*}
+$L^{\nu,T}_{ij}$ son las matrices que se obtienen de las fronteras del elemento y $\widehat K^\nu_{ij}$ son las matrices din\'amicas de rigidez que corresponden a las bases continuas.
+
+La dispersi\'on num\'erica est\'a relacionada a los eigenvalores de la siguiente ecuaci\'on
+$$
+\Lambda \mitbf M \mitbf U = \mitbf K \mitbf U 
+$$
+donde $\mitbf M$ es una matriz de masa de $2\eta \times 2\eta$, 
+$\eta$ son los grados de libertad representativos del elemento de referencia, y
+$\mitbf K$ contiene las matrices din\'amicas de rigidez.
+
+
+\begin{figure}
+\begin{picture}(150,150)
+	\multiput(0,0)(50,0){4}{\line(0,1){150}}
+	\multiput(0,0)(0,50){4}{\line(1,0){150}}
+	%\multiput(50,0)(0,50){2}{\line(1,0){150}}
+	%\multiput(0,50)(50,0){2}{\line(0,1){150}}
+	\put(70,70){$E_0$}
+
+	\put(120,70){$E_R$}
+	\put( 20,70){$E_L$}
+	\put(70, 20){$E_B$}
+	\put(70,120){$E_T$}
+
+	\put( 20,120){$E_{TL}$}
+	\put(120,120){$E_{TR}$}
+	\put( 20, 20){$E_{BL}$}
+	\put(120, 20){$E_{BR}$}
+
+	\put(100,70){$\gamma_{_R}$}
+	\put( 40,70){$\gamma_{_L}$}
+	\put(70, 42){$\gamma_{_B}$}
+	\put(70,105){$\gamma_{_T}$}
+\end{picture}
+ 
+\caption{The reference element.}
+\end{figure} 
+
+\begin{figure}
+\includegraphics[width=0.49\tw]{grdisp_egm1+1_gll_r=10.pdf}
+\includegraphics[width=0.49\tw]{grdisp_sem1_r=10.pdf}
+\caption{Curvas de dispersi\'on de EGM orden 1+1 y SEM orden 1, $r=10$}
+\end{figure} 
+
+\begin{figure}
+\includegraphics[width=0.49\tw]{grdisp_egm2+1_gll_r=10.pdf}
+\includegraphics[width=0.49\tw]{grdisp_egm2+2_gll_r=10.pdf}
+\caption{Curvas de dispersi\'on de EGM orden 2+1 y 2+2, $r=10$}
+\end{figure} 
+
+\begin{figure}
+\includegraphics[width=0.49\tw]{grdisp_sem2_r=10.pdf}
+\includegraphics[width=0.49\tw]{grdisp_sipg2_r=10.pdf}
+\caption{Curvas de dispersi\'on de SEM y DGM orden 2, $r=10$}
+\end{figure} 
+
+\begin{figure}
+\includegraphics[width=0.49\tw]{grdisp_egm4+1_r=10.pdf}
+\includegraphics[width=0.49\tw]{grdisp_egm4+2_r=10.pdf}
+\caption{Curvas de dispersi\'on de EGM orden 4+1 y 4+2, $r=10$}
+\end{figure} 
+
+\begin{figure}
+\caption{Curvas de dispersi\'on de EGM orden 4+3 y 4+4, $r=10$}
+\includegraphics[width=0.49\tw]{grdisp_egm4+3_r=10.pdf}
+\includegraphics[width=0.49\tw]{grdisp_egm4+4_r=10.pdf}
+\end{figure} 
+
+\begin{figure}
+\caption{Curvas de dispersi\'on de SEM 4, $r=10$}
+\includegraphics[width=0.49\tw]{grdisp_sem4_r=10.pdf}
+\includegraphics[width=0.49\tw]{grdisp_sipg4_r=10.pdf}
+\end{figure} 
+
+\begin{figure}
+\caption{Anisotrop\'ia num\'erica de los m\'etodos de orden 2. La dispersi\'on est\'a calculada a 10 longitudes de onda para prop\'ositos de visualizaci\'on y $\delta=0.2$}
+\includegraphics[width=0.82\tw]{grdisp-aniso_o=2_wl=10}
+\end{figure} 
+
+\begin{figure}
+\caption{Anisotrop\'ia num\'erica de los m\'etodos de orden 3. La dispersi\'on est\'a calculada a 100 longitudes de onda para prop\'ositos de visualizaci\'on y $\delta=0.2$}
+\includegraphics[width=0.82\tw]{grdisp-aniso_o=3_wl=100}
+\end{figure} 
+
+\begin{figure}
+\caption{Anisotrop\'ia num\'erica de los m\'etodos de orden 4.
+La dispersi\'on est\'a calculada a 1000 longitudes de onda para prop\'ositos de visualizaci\'on y $\delta=0.2$}
+\includegraphics[width=0.82\tw]{grdisp-aniso_o=4_wl=1000}
+\end{figure} 
+
+\section{Stability Conditions}
+
+La condici\'on de estabilidad est\'a dada por
+\begin{eqnarray*}
+	q:=\frac{\alpha\Delta t}{h} \le C =
+	\min_{1\le j\le 2\eta} 
+	\min_{0\le\theta\le 2\pi}\; 2\Lambda_j(\theta)^{-1/2}
+\end{eqnarray*}
+donde $\Lambda_j$ son los eigenvalores, $\theta$ es el \'angulo de la onda plana con respecto a la malla y $h$ es el tama\~no de las caras de los elementos.
+
+Condiciones de estabilidad (CFL), considerando el m\'etodo de diferencias finitas para avanzar en el tiempo.
+
+\begin{table}
+ 
+\caption{CFL Stability conditions of SEM, DGM (SIPG) and EGM.}
+
+%\setlength{\extrarowheight}{1mm}
+\begin{tabular}{|c | c  c | c  c  c  c |}
+\hline
+& & & \multicolumn{4}{c|}{EGM} 
+\\
+Orden & SEM & SIPG & N+1 & N+2 & N+3 & N+4 
+\\
+\hline
+1 &	0.8821 &	0.2911 & 0.4117 & & &
+\\
+2 &	0.3330 &	0.1216 & 0.3022 &	0.1719 & &
+\\
+3 &	0.1897 &	0.0688 & 0.2339 &	0.1315 &	0.0973 &
+\\
+4 &	0.1204 &	0.0439 & 0.1703 &	0.1067 &	0.0790 &	0.0621
+\\
+5 &	0.0823 &	0.0308 & 0.1164 &	0.0899 &	0.0660 &	0.0514
+\\
+6 &	0.0595 &	0.0226 & 0.0841 &	0.0777 &	0.0568 &	0.0439
+\\
+8 &	0.0351 &	0.0138 & 0.0496 &	0.0496 &	0.0444 &	0.0342
+\\
+\hline
+\end{tabular} 
+\end{table} 
+ 
+Estas condiciones son {necesarias pero no suficientes.}
+
+\section{Numerical Simulations}
+
+\begin{figure}
+\includegraphics[width=0.45\tw]{exp1-eg8g1-ux-nt=967}
+\includegraphics[width=0.45\tw]{exp1-eg8g1-uz-nt=967}
+\caption{Campos de onda -- EGM orden 8+1, t=0.4 s \textbullet{} 967 pasos en tiempo \textbullet{} 170,801 nodos}
+\end{figure} 
+
+\begin{figure}
+\includegraphics[width=0.45\tw]{exp1-eg8g2-ux-nt=967}
+\includegraphics[width=0.45\tw]{exp1-eg8g2-uz-nt=967}
+\caption{Campos de onda -- EGM orden 8+2, t=0.4 s \textbullet{} 967 pasos en tiempo \textbullet{} 183,301 nodos}
+\end{figure} 
+
+\begin{figure}
+\includegraphics[width=0.45\tw]{exp1-eg8g4-ux-nt=967}
+\includegraphics[width=0.45\tw]{exp1-eg8g4-uz-nt=967}
+\caption{Campos de onda -- EGM orden 8+4, t=0.4 s \textbullet{} 967 pasos en tiempo \textbullet{} 223,301 nodos}
+\end{figure} 
+
+\section{Discusison}
+
+\section{Conclusions}
+
+\begin{itemize}
+\item
+Se plante\'o el m\'etodo de Galerkin enriquecido con bases enriquecida de orden elevado para medios el\'asticos y fracturados
+
+\vspace{\stretch{1}}
+
+\item
+Para propagaci\'on de ondas, las bases de bajo orden polinomial introducen error de dispersi\'on num\'erica. Las bases continuas y las enriquecidas necesitan ser de orden superior
+
+\vspace{\stretch{1}}
+
+\item
+Las condiciones de estabilidad de EGM son mayores que las de DGM. Son similares a las de SEM y en algunos casos superiores
+
+\vspace{\stretch{1}}
+
+\item
+EGM puede incorporar discontinuidades relacionadas a las fracturas sin requerir tantos grados de libertad ni tama\~nos de paso peque\~nos como con DGM
+
+\end{itemize}
+
+\section*{Acknowledgments}
+MFW
+
+\bibliographystyle{siamplain}
+\bibliography{mybib}
+
+\end{document}
