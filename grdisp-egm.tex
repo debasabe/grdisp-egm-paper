@@ -1,5 +1,5 @@
 \documentclass[review,hidelinks,onefignum,onetabnum]{siamart220329}
-\input{ex_shared}
+%\input{ex_shared} %Can fin this file
 
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -39,16 +39,35 @@ MSC: 65L60, 37N30, 65M12, 35L10, 86A15, 74B05, 74J05, 74E10, 74A45.
 
 
 \section{Introduction}
+Initial paragraph about Finite Element Method...
 
-Originated as eXtended FEM (eXtended FEM (XFEM), was proposed in 1999 by Ted Belytschko, Y. Moës, and S. Usui)
-originalmente planteado por \cite{SuLi09}
+In recent years, several FEM have been developed for effectively simulation of wave propagation on Earth, for acoustic and elastic medium (CITE SOME WORKS). However, FEM may present errors when complex domains are employed, e.g. crack and fracture modelling. More recently, the Discontinuous Galerkin Method (DGM) has been studied for modeling fracture media 
+
+Paragraph about enrichment (constant, linear, polynomials)
+
+Originated as eXtended FEM (eXtended FEM (XFEM), was proposed in 1999 by Ted Belytschko \cite{Belytschko2001}
+originalmente planteado por \cite{Sun2009}
+
+Paragraph about this work method
 
 \section{The Elastic Wave Equation}
-
+We consider an elastic, anisotropic and heterogeneous medium for the unbounded domain $\Omega\in\mathbb{R}^2$. The elastic wave equation is given by
+%
+\begin{eqnarray}\label{eq:elast_wv_eq}
+\rho\partial_{tt}u_i=\partial_j\sigma_{ij}+f_i\ \mathrm{in}\ \Omega\times(0,\tau],
+\end{eqnarray}
+%
+where $u_i=u_i(\mitbf x,t)$ is the displacement vector, $f_i=f_i(\mitbf x,t)$ is the body force, $\rho=\rho(\mitbf x)$ is the density and $\sigma_{ij}=\sigma_{ij}(\mitbf x,t)$ is the stress tensor. Following the generalized Hooke's law, the stress is linearly related to the strain as
+%
+\begin{eqnarray}\label{eq:stress_strain}
+\sigma_{ij}=C_{ijkl}\epsilon_{kl},
+\end{eqnarray}
+%
+where $C_{ijkl}=C_{ijkl}(\mitbf x)$ is the 4th order stiffness tensor with some symmetries and $\epsilon_{kl}=\epsilon_{kl}(\mitbf x,t)$ is the strain tensor defined as $\epsilon_{kl}=\left(u_{i,j}+u_{j,i}\right)/2$. Here the comma notation indicates differentiation.
 
 \section{The Enriched-Galerkin Method}
 
-The enriched Galerkin method (EGM) is a finite-element method that combines continuous and discontinuous basis functions. Its application to elastic wave propagation and \textit{a priori} error analysis is found in \cite{VaDeSeWh18}. We include here the formulation of the method for completeness.
+The enriched Galerkin method (EGM) is a finite-element method that combines continuous and discontinuous basis functions. Its application to elastic wave propagation and \textit{a priori} error analysis is found in \cite{Vamaraju2018}. We include here the formulation of the method for completeness.
 
 EGM is based on the following weak formulation of the elastic wave equation:
 Find $\mitbf u\in \mitbf{X}^D$ such that for all $\mitbf v\in \mitbf{X}^D$
